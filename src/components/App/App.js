@@ -1,8 +1,11 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
+import BookItem from '../BookItem/BookItem'
+import styles from './App.module.scss'
 
 const App = () => {
   const [offset, setOffset] = useState(0)
   const [books, setBooks] = useState([])
+  const [notFound, setNotFound] = useState(false)
 
   const limit = 10
   let lastSearch = ''
@@ -43,20 +46,25 @@ const App = () => {
   }
   
   const fetchData = async() => {
-    try {
-      const search = searchInput.current.value.split(' ').join('+')
-      lastSearch = searchInput.current.value
-      const response = await fetch(`http://openlibrary.org/search.json?q=${search}&limit=10&offset=${offset}`)
+    setNotFound(false)
+    const search = searchInput.current.value.split(' ').join('+')
+    lastSearch = searchInput.current.value
+
+    if (search.trim()) {
+      const response = await fetch(`http://openlibrary.org/search.json?title=${search}&limit=10&offset=${offset}`)
         .then(response => response.json())
         .then(json => {console.log(json); return json})
+      if (response.docs.length === 0 && books.length === 0) {
+        setNotFound(true)
+      }
       if (offset === 0) {
         setBooks(response.docs)        
       } else {
         setBooks(prev => [...prev, ...response.docs])
       }
       if (response.docs.length > 0) document.addEventListener('scroll', addInfScroll)
-    } catch (error) {
-      console.error(error) 
+    } else {
+      setBooks([])
     }
   }
 
@@ -77,25 +85,42 @@ const App = () => {
     memoizedFetch()
   }, [offset, memoizedFetch])
 
+  useEffect(() => {
+    const disclaimer = document.getElementById('disclaimer')
+    disclaimer.classList.add(`${styles.show}`)
+  }, [])
+
   return (
-    <div className="App">
-      <input
-        type="text"
-        onChange={(e) => {
-          setOffset(0)
-          timer.reset()
-        }}
-        ref={searchInput}
-      />
-      <button onClick={() => setOffset(prev => (prev + limit))}>Next</button>
-      <div className='books'>
-        {books.map(book => <div className="book" key={book.key}>
-          {book.cover_i && <img src={`http://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`} alt={`${book.title} cover`} />}
-          <h2>{book.title}</h2>
-          <h3>{book.author_name}</h3>
-          <hr />
-        </div>)}
+    <div className={styles.app}>
+      <h1 className={styles.title}>
+        Книги
+      </h1>
+      <div className={styles.search}>
+        <input
+        className={styles.search__input}
+          type="text"
+          onChange={(e) => {
+            setOffset(0)
+            timer.reset()
+          }}
+          ref={searchInput}
+        />
+        <button
+          className={styles.search__button}
+          onClick={fetchData}
+        >
+          Найти
+        </button>
       </div>
+      {books.length === 0 && <small id='disclaimer' className={styles.disclaimer}>
+      Т.к. API не поддерживает русский язык, для поиска книги вводите её название транслитом, например <b>"Ponedel'nik nachinaetsya v subbotu"</b>
+      </small>}
+      {notFound
+        ? <p className={styles.noBooks}>К сожалению, по вашему запросу ничего найти не удалось</p>
+        : <div className='books'>
+            {books.map(book => <BookItem book={book} key={book.key} />)}
+          </div>
+      }
     </div>
   )
 }
