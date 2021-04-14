@@ -1,0 +1,164 @@
+.overlay {
+  background-color: rgba(0, 0, 0, .5);
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity .4s ease-in-out;
+
+  &.show {
+    opacity: 1;
+    transition: opacity .4s ease-in-out;
+  }
+}
+
+.closeModalBtn {
+  position: absolute;
+  right: 0.75rem;
+  top: 0.75rem;
+  width: 20px;
+  height: 20px;
+  line-height: 13px;
+  font-size: 18px;
+  padding-left: 7px;
+  padding-bottom: 1px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  border-radius: 50%;
+  border: 1px solid #c4c4c4;
+  background-color: #fff;
+  font-style: normal;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+  outline: none;
+
+  &:hover,
+  &:focus {
+    background-color: rgb(255, 202, 64);
+  }
+}
+
+.bookData {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  padding: 2rem 1rem;
+  max-width: 700px;
+  height: 500px;
+  max-height: max-content;
+  background-color: #fff;
+  border-radius: 5px;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  outline: none;
+  
+  &__cover {
+    width: 350px;
+    height: auto;
+    margin-right: 2rem;
+    border-radius: 3px;
+    box-shadow: 3px 2px 7px 0px black;
+
+    &_placeholder {
+      background-color: #c4c4c4;
+      position: relative;
+
+      &::after {
+        position: absolute;
+        top: 50%;
+        left: 0;
+        right: 0;
+        margin: auto;
+        content: "Нет изображения";
+        width: 95%;
+        text-align: center;
+        font-size: 1.2rem;
+        line-height: 1.2rem;
+        font-weight: 700;
+        color: #fff;
+        filter: drop-shadow(3px 2px 3px #555);
+        transform: translateY(-50%);
+      }
+    }
+  }
+
+  &__info {
+
+    &_title {
+      font-size: 2.5em;
+      margin: 1rem;
+      margin-top: 0;
+    }
+
+    &_author {
+      text-align: right;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid rgba(85, 85, 85, 0.7);
+    }
+
+    &_additional {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid #c4c4c4;
+      padding: 0.5rem;
+    }
+
+    &_addTitle {
+      margin-right: 1rem;
+      align-self: center;
+    }
+
+    &_addValue {
+      text-align: right;
+      align-self: center;
+    }
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .bookData {
+    width: 85vw;
+    height: min-content;
+    font-size: 13px;
+
+    &__cover {
+      width: 50%;
+      height: min-content;
+
+      &_placeholder {
+        padding-top: 72%;   // 0.72 === 180 / 250 (сохраняя пропорции от превью)
+        flex-shrink: 0;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 529px) {
+  .bookData {
+    font-size: 14px;
+    flex-direction: column;
+
+    &__cover {
+      margin-bottom: 2rem;
+      align-self: center;
+      margin-right: 0;
+    }
+
+    &__info {
+
+      &_title {
+        text-align: center;
+        font-size: 2em;
+      }
+    }
+  }
+}

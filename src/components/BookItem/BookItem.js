@@ -1,11 +1,29 @@
 import React from 'react'
 import styles from './BookItem.module.scss'
 
-const BookItem = ({ book }) => {
+const BookItem = ({ book, setSelectedBook }) => {
+
+  const openBookByKeyboard = (evt) => {
+    if (evt.key === ' ' || evt.key === 'Enter') {
+      evt.target.click();
+    }
+  } 
+
+  const focusBookHandler = (evt) => {
+    evt.target.addEventListener('keypress', openBookByKeyboard)
+  }
+
+  const blurBookHandler = (evt) => {
+    evt.target.removeEventListener('keypress', openBookByKeyboard)
+  }
+
   return (
     <div
       className={styles.book}
-      // onClick={showModalWithdata}
+      onClick={() => setSelectedBook(book)}
+      tabIndex='0'
+      onFocus={focusBookHandler}
+      onBlur={blurBookHandler}
     >
     {book.cover_i && book.cover_i !== -1
       ? <img

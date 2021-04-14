@@ -1,15 +1,18 @@
 import { useState, useRef, useEffect, useCallback } from 'react'
 import BookItem from '../BookItem/BookItem'
+import Modal from '../Modal/Modal'
 import styles from './App.module.scss'
 
 const App = () => {
   const [offset, setOffset] = useState(0)
   const [books, setBooks] = useState([])
   const [notFound, setNotFound] = useState(false)
+  const [selectedBook, setSelectedBook] = useState(null)
 
   const limit = 10
   let lastSearch = ''
   const searchInput = useRef()
+  const disclaimer = useRef()
 
   function Timer(fn, t) {
     let timerObj = setTimeout(fn, t)
@@ -86,12 +89,14 @@ const App = () => {
   }, [offset, memoizedFetch])
 
   useEffect(() => {
-    const disclaimer = document.getElementById('disclaimer')
-    disclaimer.classList.add(`${styles.show}`)
-  }, [])
+    if (books.length === 0) {
+      disclaimer.current.classList.add(`${styles.show}`)
+    } 
+  }, [books])
 
   return (
     <div className={styles.app}>
+      {selectedBook && <Modal book={selectedBook} setSelectedBook={setSelectedBook} />}
       <h1 className={styles.title}>
         Книги
       </h1>
@@ -107,18 +112,18 @@ const App = () => {
         />
         <button
           className={styles.search__button}
-          onClick={fetchData}
+          onClick={() => {timer.stop(); fetchData()}}
         >
           Найти
         </button>
       </div>
-      {books.length === 0 && <small id='disclaimer' className={styles.disclaimer}>
+      {books.length === 0 && <small id='disclaimer' className={styles.disclaimer} ref={disclaimer}>
       Т.к. API не поддерживает русский язык, для поиска книги вводите её название транслитом, например <b>"Ponedel'nik nachinaetsya v subbotu"</b>
       </small>}
       {notFound
         ? <p className={styles.noBooks}>К сожалению, по вашему запросу ничего найти не удалось</p>
         : <div className='books'>
-            {books.map(book => <BookItem book={book} key={book.key} />)}
+            {books.map(book => <BookItem book={book} key={book.key} setSelectedBook={setSelectedBook}/>)}
           </div>
       }
     </div>
