@@ -1,7 +1,11 @@
 import React, { useEffect, useRef } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
+import { setCurrentBook } from '../../store/actionCreators'
 import styles from './Modal.module.scss'
 
-const Modal = ({ book, setSelectedBook }) => {
+const Modal = () => {
+  const book = useSelector(state => state.selectedBook)
+  const dispatch = useDispatch()
 
   const overlay = useRef()
   const modal = useRef()
@@ -17,7 +21,7 @@ const Modal = ({ book, setSelectedBook }) => {
   const closeModal = () => {
     overlay.current.classList.remove(styles.show)
 
-    setTimeout(() => setSelectedBook(null), 600)
+    setTimeout(() => dispatch(setCurrentBook(null)), 600)
   }
 
   useEffect(() => {

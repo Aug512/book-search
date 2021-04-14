@@ -1,7 +1,11 @@
 import React from 'react'
+import { useDispatch } from 'react-redux' 
+import { setCurrentBook } from '../../store/actionCreators'
 import styles from './BookItem.module.scss'
 
-const BookItem = ({ book, setSelectedBook }) => {
+const BookItem = ({ book }) => {
+
+  const dispatch = useDispatch()
 
   const openBookByKeyboard = (evt) => {
     if (evt.key === ' ' || evt.key === 'Enter') {
@@ -20,7 +24,7 @@ const BookItem = ({ book, setSelectedBook }) => {
   return (
     <div
       className={styles.book}
-      onClick={() => setSelectedBook(book)}
+      onClick={() => dispatch(setCurrentBook(book))}
       tabIndex='0'
       onFocus={focusBookHandler}
       onBlur={blurBookHandler}
