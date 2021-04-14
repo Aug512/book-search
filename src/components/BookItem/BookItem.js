@@ -32,7 +32,7 @@ const BookItem = ({ book }) => {
     {book.cover_i && book.cover_i !== -1
       ? <img
         className={styles.book__cover}
-        src={`http://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`}
+        src={`https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`}
         alt={`${book.title} cover`}
       />
       : <div className={`${styles.book__cover_placeholder} ${styles.book__cover}`} />

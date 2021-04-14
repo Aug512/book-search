@@ -43,7 +43,7 @@ const Modal = () => {
         {book.cover_i && book.cover_i !== -1
           ? <img
             className={styles.bookData__cover}
-            src={`http://covers.openlibrary.org/b/id/${book.cover_i}-L.jpg`}
+            src={`https://covers.openlibrary.org/b/id/${book.cover_i}-L.jpg`}
             alt={`${book.title} cover`}
           />
           : <div className={`${styles.bookData__cover_placeholder} ${styles.bookData__cover}`} />

@@ -68,7 +68,7 @@ export const fetchBooks = (search) => {
     try {
       if (search.trim() && (search !== lastSearch || offset !== 0)) {
         dispatch(requestBooks())
-        const response = await fetch(`http://openlibrary.org/search.json?title=${requestParam}&limit=10&offset=${offset}`)
+        const response = await fetch(`https://openlibrary.org/search.json?title=${requestParam}&limit=10&offset=${offset}`)
           .then(response => response.json())
         if (response.docs.length === 0 && getState().books.length === 0) {
           dispatch(setNotFoundMessage(true))
