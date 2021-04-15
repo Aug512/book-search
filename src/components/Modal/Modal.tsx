@@ -1,16 +1,17 @@
 import React, { useEffect, useRef } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { useTypedSelector } from '../../utils/useTypedSelector'
 import { setCurrentBook } from '../../store/actionCreators'
 import styles from './Modal.module.scss'
 
-const Modal = () => {
-  const book = useSelector(state => state.selectedBook)
+const Modal: React.FC = () => {
+  const book = useTypedSelector(state => state.selectedBook)
   const dispatch = useDispatch()
 
-  const overlay = useRef()
-  const modal = useRef()
+  const overlay = useRef<HTMLDivElement | null>(null)
+  const modal = useRef<HTMLDivElement | null>(null)
 
-  const formatIsbn = (isbn) => {
+  const formatIsbn = (isbn: string): string => {
     if (isbn.length === 13) {
       return `${isbn.slice(0, 3)}-${isbn[3]}-${isbn.slice(4, 8)}-${isbn.slice(8, 12)}-${isbn[12]}`
     } else if (isbn.length === 10) {
@@ -19,61 +20,61 @@ const Modal = () => {
   }
 
   const closeModal = () => {
-    overlay.current.classList.remove(styles.show)
+    overlay.current!.classList.remove(styles.show)
 
     setTimeout(() => dispatch(setCurrentBook(null)), 600)
   }
 
   useEffect(() => {
-    overlay.current.classList.add(styles.show)
+    overlay.current!.classList.add(styles.show)
 
-    modal.current.focus()
+    modal.current!.focus()
   }, [])
 
   return (
     <div ref={overlay} className={styles.overlay} onClick={closeModal}>
-      <main ref={modal} className={styles.bookData} onClick={e => e.stopPropagation()} tabIndex='1'>
+      <main ref={modal} className={styles.bookData} onClick={e => e.stopPropagation()} tabIndex={1}>
       <button
         className={styles.closeModalBtn}
         onClick={closeModal}
-        tabIndex='1'
+        tabIndex={1}
       >
         &times;
       </button>
-        {book.cover_i && book.cover_i !== -1
+        {book!.cover_i && book!.cover_i[0] !== '-1'
           ? <img
             className={styles.bookData__cover}
-            src={`https://covers.openlibrary.org/b/id/${book.cover_i}-L.jpg`}
-            alt={`${book.title} cover`}
+            src={`https://covers.openlibrary.org/b/id/${book!.cover_i}-L.jpg`}
+            alt={`${book!.title} cover`}
           />
           : <div className={`${styles.bookData__cover_placeholder} ${styles.bookData__cover}`} />
         }
         <div className={styles.bookData__info}>
           <h2 className={styles.bookData__info_title}>
-            {book.title}
+            {book!.title}
           </h2>
           <p className={styles.bookData__info_author}>
-            {book.author_name.length > 1
-              ? <>Авторы: <b>{book.author_name.join(', ')}</b></>
-              : <>Автор: <b>{book.author_name}</b></>
+            {book!.author_name.length > 1
+              ? <>Авторы: <b>{book!.author_name.join(', ')}</b></>
+              : <>Автор: <b>{book!.author_name}</b></>
             }
           </p>
           <div className={styles.bookData__info_additional}>
             <b className={styles.bookData__info_addTitle}>Дата публикации:</b>
             <span className={styles.bookData__info_addValue}>
-              {book.publish_date[0]}
+              {book!.publish_date ? book!.publish_date[0] : 'Дата публикации отсутствует в базе'}
             </span>
           </div>
           <div className={styles.bookData__info_additional}>
             <b className={styles.bookData__info_addTitle}>Издатель:</b>
             <span className={styles.bookData__info_addValue}>
-              {book.publisher[0]}
+              {book!.publisher ? book!.publisher[0] : 'Сведения об издателе отсутствуют в базе'}
             </span>
           </div>
           <div className={styles.bookData__info_additional}>
             <b className={styles.bookData__info_addTitle}>ISBN:</b>
             <span className={styles.bookData__info_addValue}>
-              {book.isbn? formatIsbn(book.isbn[0]) : 'ISBN отсутствует'}
+              {book!.isbn? formatIsbn(book!.isbn[0]) : 'ISBN отсутствует в базе'}
             </span>
           </div>
         </div>

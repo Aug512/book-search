@@ -1,4 +1,6 @@
-const initialState = {
+import { storeInterface } from './types'
+
+const initialState: storeInterface = {
   offset: 0,
   limit: 10,
   books: [],

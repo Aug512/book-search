@@ -1,35 +1,41 @@
 import { useRef, useEffect, useCallback } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
+import { useTypedSelector } from '../../utils/useTypedSelector'
 import { fetchBooks, setOffset } from '../../store/actionCreators'
-import BookItem from '../BookItem/BookItem'
-import Modal from '../Modal/Modal'
-import ErrPopup from '../ErrPopup/ErrPopup'
+// TypeScript (а именно его компилятор) запрещает явно указывать расширение ts/tsx файлов
+// @ts-ignore
+import BookItem from '../BookItem/BookItem.tsx'
+// @ts-ignore
+import Modal from '../Modal/Modal.tsx'
+// @ts-ignore
+import ErrPopup from '../ErrPopup/ErrPopup.tsx'
 import Loader from '../Loader/Loader'
 import addInfScroll from '../../utils/infiniteScroll'
 import Timer from '../../utils/timer'
+import { bookInterface } from '../../store/types'
 import styles from './App.module.scss'
 
-const App = () => {
-  const offset = useSelector(state => state.offset)
-  const books = useSelector(state => state.books)
-  const lastSearch = useSelector(state => state.lastSearch)
-  const isLoading = useSelector(state => state.showLoader)
-  const isError = useSelector(state => state.error ?? false)
-  const notFoundMessage = useSelector(state => state.booksNotFound)
-  const selectedBook = useSelector(state => state.selectedBook)
+const App: React.FC = () => {
+  const offset = useTypedSelector(state => state.offset)
+  const books = useTypedSelector(state => state.books)
+  const lastSearch = useTypedSelector(state => state.lastSearch)
+  const isLoading = useTypedSelector(state => state.showLoader)
+  const isError = useTypedSelector(state => state.error ?? false)
+  const notFoundMessage = useTypedSelector(state => state.booksNotFound)
+  const selectedBook = useTypedSelector(state => state.selectedBook)
 
   const dispatch = useDispatch()
 
-  const searchInput = useRef()
-  const disclaimer = useRef()
+  const searchInput = useRef<HTMLInputElement | null>(null)
+  const disclaimer = useRef<HTMLElement | null>(null)
 
   const timer = new Timer(() => {
-    dispatch(fetchBooks(searchInput.current.value))
+    dispatch(fetchBooks(searchInput.current!.value))
   }, 1000)
   timer.stop()
 
   const memoizedFetch = useCallback(() => {
-    if (offset !== 0 || searchInput.current.value.trim() !== lastSearch) {
+    if (offset !== 0 || searchInput.current!.value.trim() !== lastSearch) {
       timer.reset()
     }
   }, [offset, lastSearch])
@@ -41,7 +47,7 @@ const App = () => {
 
   useEffect(() => {
     if (books.length === 0) {
-      disclaimer.current.classList.add(`${styles.show}`)
+      disclaimer.current!.classList.add(`${styles.show}`)
     } 
   }, [books])
 
@@ -65,7 +71,7 @@ const App = () => {
         />
         <button
           className={styles.search__button}
-          onClick={() => {timer.stop(); dispatch(fetchBooks(searchInput.current.value))}}
+          onClick={() => {timer.stop(); dispatch(fetchBooks(searchInput.current!.value))}}
         >
           Найти
         </button>
@@ -80,7 +86,7 @@ const App = () => {
       {notFoundMessage
         ? <p className={styles.noBooks}>К сожалению, по вашему запросу ничего найти не удалось</p>
         : <div className='books'>
-            {books.map(book => <BookItem book={book} key={book.key} />)}
+            {books.map((book: bookInterface) => <BookItem book={book} key={book.key} />)}
           </div>
       }
     </div>

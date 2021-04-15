@@ -1,18 +1,21 @@
 import initialState from './initialState'
-import { SET_OFFSET, STORE_REQUEST } from './actions'
-import { FETCH_BOOKS_START, FETCH_BOOKS_SUCCESS, FETCH_BOOKS_FAILURE, CLEAR_BOOKS } from './actions'
-import { BOOKS_NOT_FOUND, SELECT_BOOK } from './actions'
+import { actionType } from './actions'
+import { storeInterface, action } from './types'
 
-const reducer = (state = initialState, action) => {
+// import { SET_OFFSET, STORE_REQUEST } from './actions'
+// import { FETCH_BOOKS_START, FETCH_BOOKS_SUCCESS, FETCH_BOOKS_FAILURE, CLEAR_BOOKS } from './actions'
+// import { BOOKS_NOT_FOUND, SELECT_BOOK } from './actions'
+
+const reducer = (state: storeInterface = initialState, action: action) => {
   
   switch (action.type) {
-    case SET_OFFSET:
+    case actionType.SET_OFFSET:
       return {
         ...state,
         offset: action.payload,
       }
 
-    case FETCH_BOOKS_START:
+    case actionType.FETCH_BOOKS_START:
       return {
         ...state,
         booksNotFound: false,
@@ -20,14 +23,14 @@ const reducer = (state = initialState, action) => {
         error: null,
       }
 
-    case BOOKS_NOT_FOUND:
+    case actionType.BOOKS_NOT_FOUND:
       return {
         ...state,
         booksNotFound: true,
         showLoader: false,
       }
     
-    case FETCH_BOOKS_SUCCESS:
+    case actionType.FETCH_BOOKS_SUCCESS:
       if (state.offset === 0 ) {
         return {
           ...state,
@@ -46,14 +49,14 @@ const reducer = (state = initialState, action) => {
       }
       
 
-    case FETCH_BOOKS_FAILURE:
+    case actionType.FETCH_BOOKS_FAILURE:
       return {
         ...state,
         showLoader: false,
         error: action.payload,
       }
 
-    case CLEAR_BOOKS:
+    case actionType.CLEAR_BOOKS:
       return {
         ...state,
         booksNotFound: false,
@@ -61,13 +64,13 @@ const reducer = (state = initialState, action) => {
         books: [],
       }
 
-    case SELECT_BOOK:
+    case actionType.SELECT_BOOK:
       return {
         ...state,
         selectedBook: action.payload,
       }
 
-    case STORE_REQUEST:
+    case actionType.STORE_REQUEST:
       return {
         ...state,
         lastSearch: action.payload,

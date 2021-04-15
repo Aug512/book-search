@@ -1,65 +1,65 @@
-import { SET_OFFSET, STORE_REQUEST } from './actions'
-import { FETCH_BOOKS_START, FETCH_BOOKS_SUCCESS, FETCH_BOOKS_FAILURE, CLEAR_BOOKS } from './actions'
-import { BOOKS_NOT_FOUND, SELECT_BOOK } from './actions'
+import { actionType } from './actions'
+import { action, storeInterface, bookInterface } from './types'
 import addInfScroll from '../utils/infiniteScroll'
+import { ThunkAction } from 'redux-thunk'
 
-export const setOffset = (offset) => {
+export const setOffset = (offset: number): action => {
   return {
-    type: SET_OFFSET,
+    type: actionType.SET_OFFSET,
     payload: offset,
   }
 }
 
-export const requestBooks = () => {
+export const requestBooks = (): action => {
   return {
-    type: FETCH_BOOKS_START,
+    type: actionType.FETCH_BOOKS_START,
   }
 }
 
-export const requestBooksSuccess = (books) => {
+export const requestBooksSuccess = (books: bookInterface[]): action => {
   return {
-    type: FETCH_BOOKS_SUCCESS,
+    type: actionType.FETCH_BOOKS_SUCCESS,
     payload: books,
   }
 }
 
-export const requestBooksFailure = (error) => {
+export const requestBooksFailure = (error: Error): action => {
   return {
-    type: FETCH_BOOKS_FAILURE,
+    type: actionType.FETCH_BOOKS_FAILURE,
     payload: error,
   }
 }
 
-export const clearBooksList = () => {
+export const clearBooksList = (): action => {
   return {
-    type: CLEAR_BOOKS,
+    type: actionType.CLEAR_BOOKS,
   }
 }
 
-export const setNotFoundMessage = (boolstate) => {
+export const setNotFoundMessage = (state: boolean): action => {
   return {
-    type: BOOKS_NOT_FOUND,
-    payload: boolstate,
+    type: actionType.BOOKS_NOT_FOUND,
+    payload: state,
   }
 }
 
-export const setCurrentBook = (book) => {
+export const setCurrentBook = (book: bookInterface | null): action => {
   return {
-    type: SELECT_BOOK,
+    type: actionType.SELECT_BOOK,
     payload: book,
   }
 }
 
-export const storeLastRequest = (string) => {
+export const storeLastRequest = (request: string): action => {
   return {
-    type: STORE_REQUEST,
-    payload: string,
+    type: actionType.STORE_REQUEST,
+    payload: request,
   }
 }
 
 // async
 
-export const fetchBooks = (search) => {
+export const fetchBooks = (search: string): ThunkAction<void, storeInterface, unknown, action> => {
   return async (dispatch, getState) => {
     const requestParam = search.split(' ').join('+')
     const offset = getState().offset
